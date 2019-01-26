@@ -9,6 +9,11 @@ import (
 )
 
 func main() {
+	fmt.Println(concurrent())
+	fmt.Println(nonConcurrent())
+}
+
+func concurrent() int {
 	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -30,7 +35,7 @@ func main() {
 
 	wg.Wait()
 
-	fmt.Printf("The checksum (%d * %d) is %d", res.twos, res.threes, res.twos * res.threes)
+	return res.twos * res.threes
 }
 
 type numberOcc struct {
@@ -48,6 +53,30 @@ func (occ *numberOcc) add (gotTwo, gotThree bool) {
 		occ.threes++
 	}
 	occ.mu.Unlock()
+}
+
+func nonConcurrent() (int) {
+	file, err := os.Open("input.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	var numTwos, numThrees int
+
+	for scanner.Scan() {
+		gotTwo, gotThree := getDupAndTripLetters(scanner.Text())
+		if gotTwo {
+			numTwos++
+		}
+		if gotThree {
+			numThrees++
+		}
+	}
+
+	return numTwos * numThrees
 }
 
 // checks if any letter occurs exactly twice or three times in a string
@@ -68,3 +97,4 @@ func getDupAndTripLetters(s string) (gotTwo, gotThree bool) {
 
 	return
 }
+
