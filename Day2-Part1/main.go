@@ -27,10 +27,10 @@ func concurrent() int {
 
 	for scanner.Scan() {
 		wg.Add(1)
-		go func (s string) {
+		go func(s string) {
 			res.add(getDupAndTripLetters(s))
 			wg.Done()
-		} (scanner.Text())
+		}(scanner.Text())
 	}
 
 	wg.Wait()
@@ -44,7 +44,7 @@ type numberOcc struct {
 	mu     sync.Mutex
 }
 
-func (occ *numberOcc) add (gotTwo, gotThree bool) {
+func (occ *numberOcc) add(gotTwo, gotThree bool) {
 	occ.mu.Lock()
 	if gotTwo {
 		occ.twos++
@@ -55,7 +55,7 @@ func (occ *numberOcc) add (gotTwo, gotThree bool) {
 	occ.mu.Unlock()
 }
 
-func nonConcurrent() (int) {
+func nonConcurrent() int {
 	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -97,4 +97,3 @@ func getDupAndTripLetters(s string) (gotTwo, gotThree bool) {
 
 	return
 }
-
