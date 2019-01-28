@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
-	"strings"
 )
 
 type f struct {
@@ -26,7 +24,8 @@ func main() {
 	f := new(f)
 
 	for sc.Scan() {
-		initX, initY, w, h := parseDimensions(sc.Text())
+		var id, initX, initY, w, h int
+		fmt.Sscanf(sc.Text(), "#%d @ %d,%d: %dx%d", &id, &initX, &initY, &w, &h)
 		f.fillFabric(initX, initY, w, h)
 	}
 
@@ -45,17 +44,4 @@ func (f *f) fillFabric(initX, initY, w, h int) {
 			}
 		}
 	}
-}
-
-func parseDimensions(s string) (x, y, w, h int) {
-	parts := strings.FieldsFunc(s, func(r rune) bool {
-		return r == '#' || r == '@' || r == ',' || r == 'x' || r == ':' || r == ' '
-	})
-
-	x, _ = strconv.Atoi(parts[1])
-	y, _ = strconv.Atoi(parts[2])
-	w, _ = strconv.Atoi(parts[3])
-	h, _ = strconv.Atoi(parts[4])
-
-	return
 }
